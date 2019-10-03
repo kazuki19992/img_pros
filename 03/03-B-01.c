@@ -81,6 +81,58 @@ void get_data(void){
         printf("header[%d] = %02x ", i, header[i]);
     }
     printf("\n%dライン\n", *(int *)&header[22]);
+
+    printf("\n<色プレーン数>\n");
+    for(i = 26; i < 28; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<1画素あたりのビット数>\n");
+    for(i = 28; i < 30; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    printf("\n%dビット\n", *(int *)&header[28]);
+    
+    printf("\n<圧縮方式>\n");
+    for(i = 30; i < 34; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<画像データサイズ>\n");
+    for(i = 34; i < 38; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<水平解像度>\n");
+    for(i = 38; i < 42; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<垂直解像度>\n");
+    for(i = 42; i < 46; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<色数>\n");
+    for(i = 46; i < 50; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<重要な色数>\n");
+    for(i = 50; i < 54; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<挿入ビット数>\n");
+    printf("2バイト\n");
+    
     // ファイルクローズ
     fclose(fp); 
 }
