@@ -1,0 +1,61 @@
+Script started on Fri Sep 27 08:10:45 2019
+u306065@cse-ssh2[31]: cat 01-A-01.c
+// 画像情報処理
+// ファイルアクセス
+// 2019/09/20 13:55
+
+#include<stdio.h>
+#include<stdlib.h>
+
+int main(){
+    FILE *fp;
+    int c = 0, byt_cnt = 0;
+
+    fp = fopen("test.bmp","rb");
+    
+    // ファイルが存在するか確認
+    if(fp == NULL){
+        printf("ファイルをオープンできません。\n");
+        exit(1);
+    }
+
+    printf("ファイルをオープンしました。\n");
+
+
+    // ファイルから1バイトずつ読み込み
+    c = fgetc(fp);
+
+    while(c != EOF){
+        printf("%3d\n",c);
+        byt_cnt++;
+        c = fgetc(fp);
+    }
+
+    // ファイルクローズ
+    fclose(fp);
+
+    printf("全部で%dバイト読み込みました\n", byt_cnt);
+    printf("ファイルをクローズしました\n");
+
+    return 0;
+}
+u306065@cse-ssh2[32]: gcc -Wall 01-A-01.c
+u306065@cse-ssh2[33]: ./a.out
+ファイルをオープンしました。
+  0
+ 32
+ 64
+ 96
+128
+160
+192
+224
+全部で8バイト読み込みました
+ファイルをクローズしました
+u306065@cse-ssh2[34]: mv test.bmp test1.bmp
+u306065@cse-ssh2[35]: ./a.out
+ファイルをオープンできません。
+u306065@cse-ssh2[36]: exit
+exit
+
+Script done on Fri Sep 27 08:11:55 2019

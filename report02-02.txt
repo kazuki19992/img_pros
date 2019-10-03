@@ -1,0 +1,72 @@
+Script started on Fri Sep 27 13:43:52 2019
+u306065@imac-568[31]: cat 02-B-01.c
+// 画像情報処理
+// 2019/09/27
+// 櫛田一樹
+#include<stdio.h>
+#include<stdlib.h>
+
+int main(){
+    FILE *fp;
+    int i, num = 0, val = 0;
+    char fname[20];
+
+    // ファイル名の入力
+    printf("ファイル名を入力して下さい：");
+    scanf("%s", fname);
+
+    // ファイルオープン
+    fp = fopen(fname, "wb");
+
+    if(fp == NULL){
+        printf("ファイルをオープンできません.\n");
+        exit(1);
+    }
+
+    printf("ファイルをオープンしました.\n");
+
+    // ファイルの書き出し設定
+    printf("何バイト書き出しますか:");
+    scanf("%d",&num);
+    printf("\n");
+
+    // ファイルに書き出し
+    printf("0以上255以下の値を%d個入力してください.\n", num);
+    for(i = 0; i < num; i++){
+        printf("No.%d:", i+1);
+        scanf("%d", &val);
+        fputc(val, fp);
+    }
+
+    // ファイルクローズ
+    fclose(fp);
+    printf("ファイルをクローズしました.\n");
+
+    return 0;
+}
+u306065@imac-568[32]: gcc -Wall 02-B-01.c -o 2b2.out
+u306065@imac-568[33]: gcc -Wall 02-A-01.c -o a.out
+u306065@imac-568[34]: 2b2.out
+ファイル名を入力して下さい：test02.bmp
+ファイルをオープンしました.
+何バイト書き出しますか:4
+
+0以上255以下の値を4個入力してください.
+No.1:1
+No.2:2
+No.3:3
+No.4:255
+ファイルをクローズしました.
+u306065@imac-568[35]: ./a.out
+ファイル名を入力して下さい：test02.bmp
+ファイルをオープンしました。
+  1
+  2
+  3
+255
+全部で4バイト読み込みました
+ファイルをクローズしました
+u306065@imac-568[36]: exit
+exit
+
+Script done on Fri Sep 27 13:45:46 2019
