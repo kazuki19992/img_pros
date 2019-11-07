@@ -143,16 +143,16 @@ void get_data(void){
     ins = filesize - offset - width * height * (bit / 8);
     printf("%dバイト\n", ins);
 
-    for(i=height-1;i>=0;i--){
-        for(int j=0;j<width;j++){
-            for(int k=2;k>=0;k--){
+    for(i = height - 1; i >= 0; i--){
+        for(int j = 0; j < width; j++){
+            for(int k = 2; k >= 0; k--){
                 imgin[k][i][j]=fgetc(fp);
             }
         }
     }
 
     // ファイルクローズ
-    fclose(fp); 
+    fclose(fp);  
 }
 
 void processing(){
@@ -178,6 +178,6 @@ void processing(){
             putchar('\n');
         }
         putchar('\n');
-    }
-    
+    } 
 }
+
