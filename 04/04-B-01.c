@@ -10,12 +10,19 @@ unsigned char imgin[3][512][512];
 
 void get_data(void);
 void processing(void);
+void put_data(void);
 
 int width, height, ins;
 
 int main(){
     get_data();
-    processing();
+
+    if(width < 40 || height < 40){
+        processing();
+    }else{
+        printf("画像サイズが大きすぎるためスキップします\n");
+    }
+    put_data();
     return 0;
 }
 
@@ -181,3 +188,26 @@ void processing(){
     } 
 }
 
+void put_data(){
+    char n_fname[20];
+    FILE *fp;
+    printf("ファイル名を入力:");
+    scanf("%s",n_fname);
+    fp=fopen(n_fname,"wb");
+    if(fp==NULL){
+        printf("ファイルをオープンできません\n");
+        exit (1);
+    }
+    printf("ファイルをオープンしました\n");
+    for(int i = 0; i < 54; i++){
+        fputc(header[i],fp);
+    }
+    for(int i = height - 1; i >= 0; i--){
+        for(int j = 0; j < width; j++){
+            for(int k = 2; k >= 0; k--){
+                fputc(imgin[k][i][j],fp );
+            }
+        }
+    }
+    fclose(fp);
+}
