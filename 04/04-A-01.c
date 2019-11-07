@@ -6,11 +6,16 @@
 #include<stdlib.h>
 
 unsigned char header[54];
+unsigned char imgin[3][512][512];
 
 void get_data(void);
+void processing(void);
+
+int width, height, ins;
 
 int main(){
     get_data();
+    processing();
     return 0;
 }
 
@@ -50,7 +55,8 @@ void get_data(void){
     for(i = 2; i < 6; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dバイト\n", *(int *)&header[2]);
+    int filesize = *(int *)&header[2];
+    printf("\n%dバイト\n", filesize);
     
     printf("\n<予約領域>\n");
     for(i = 6; i < 10; i++){
@@ -62,7 +68,8 @@ void get_data(void){
     for(i = 10; i < 13; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dバイト\n", *(int *)&header[10]);
+    int offset = *(int *)&header[10];
+    printf("\n%dバイト\n", offset);
 
     printf("\n<情報ヘッダサイズ>\n");
     for(i = 14; i < 18; i++){
@@ -74,13 +81,15 @@ void get_data(void){
     for(i = 18; i < 22; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%d画素\n", *(int *)&header[18]);
+    width = *(int *)&header[18];
+    printf("\n%d画素\n", width);
 
     printf("\n<画像の高さ>\n");
     for(i = 22; i < 26; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dライン\n", *(int *)&header[22]);
+    height = *(int *)&header[22];
+    printf("\n%dライン\n", height);
 
     printf("\n<色プレーン数>\n");
     for(i = 26; i < 28; i++){
@@ -92,6 +101,7 @@ void get_data(void){
     for(i = 28; i < 30; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
+    int bit = *(int *)&header[28];
     printf("\n%oビット\n", *(short *)&header[28]);
     
     printf("\n<圧縮方式>\n");
@@ -131,8 +141,44 @@ void get_data(void){
     putchar('\n');
     
     printf("\n<挿入ビット数>\n");
-    printf("%dバイト\n", (int) (*(int *)&header[2]-*(int *)&header[10]-*(int *)&header[18] * *(int *)&header[22] * (*(short *)header[28]/8)));
+    ins = filesize - offset - width * height * (bit / 8);
+    printf("%dバイト\n", ins);
     
+    for(int j = 0; i < height; j++){
+        for(int k = 0; k < width; k+=3){
+            for(int i = 2; i >= 0; i--){
+                imgin[i][j][k] = fgetc(fp);
+            }
+        }
+    }
+
     // ファイルクローズ
     fclose(fp); 
+}
+
+void processing(){
+    int i, j, k;
+   
+    for(i = 0; i < 3; i++){
+        switch(i){
+            case 0:{
+                printf("<R信号>\n");
+                break;
+            }case 1:{
+                printf("<G信号>\n");
+                break;
+            }case 2:{
+                printf("<B信号>\n");
+                break;
+            }
+        }
+        for(j = 0; j < height; j++){
+            for(k = 0; k < width; k++){
+                printf("%02x ", imgin[i][j][k]);
+            }
+            putchar('\n');
+        }
+        putchar('\n');
+    }
+    
 }
