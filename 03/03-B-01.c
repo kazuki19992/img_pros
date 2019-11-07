@@ -50,7 +50,8 @@ void get_data(void){
     for(i = 2; i < 6; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dバイト\n", *(int *)&header[2]);
+    int filesize = *(int *)&header[2];
+    printf("\n%dバイト\n", filesize);
     
     printf("\n<予約領域>\n");
     for(i = 6; i < 10; i++){
@@ -62,7 +63,8 @@ void get_data(void){
     for(i = 10; i < 13; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dバイト\n", *(int *)&header[10]);
+    int offset = *(int *)&header[10];
+    printf("\n%dバイト\n", offset);
 
     printf("\n<情報ヘッダサイズ>\n");
     for(i = 14; i < 18; i++){
@@ -74,13 +76,15 @@ void get_data(void){
     for(i = 18; i < 22; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%d画素\n", *(int *)&header[18]);
+    int width = *(int *)&header[18];
+    printf("\n%d画素\n", width);
 
     printf("\n<画像の高さ>\n");
     for(i = 22; i < 26; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%dライン\n", *(int *)&header[22]);
+    int height = *(int *)&header[22];
+    printf("\n%dライン\n", height);
 
     printf("\n<色プレーン数>\n");
     for(i = 26; i < 28; i++){
@@ -92,7 +96,8 @@ void get_data(void){
     for(i = 28; i < 30; i++){
         printf("header[%d] = %02x ", i, header[i]);
     }
-    printf("\n%oビット\n", *(short *)&header[28]);
+    int bit = *(int *)&header[28];
+    printf("\n%oビット\n", *(int *)&header[28]);
     
     printf("\n<圧縮方式>\n");
     for(i = 30; i < 34; i++){
@@ -131,7 +136,7 @@ void get_data(void){
     putchar('\n');
     
     printf("\n<挿入ビット数>\n");
-    printf("%dバイト\n", (int) (*(int *)&header[2]-*(int *)&header[10]-*(int *)&header[18] * *(int *)&header[22] * (*(short *)header[28]/8)));
+    printf("%dバイト\n", filesize - offset - width * height * (bit / 8));
     
     // ファイルクローズ
     fclose(fp); 
