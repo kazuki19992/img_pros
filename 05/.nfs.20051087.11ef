@@ -29,6 +29,7 @@ int main(){
     printf(" G  : %9.4lf\n",rgbio[1]);
     printf(" B  : %9.4lf\n",rgbio[2]);
 
+    
     // 変換
     printf("<変換されたYCbCr信号(実数値)>\n");
     for(int i = 0; i < 3; i++){
@@ -36,7 +37,7 @@ int main(){
         for(int j = 0; j < 3; j++){
             ycbcr_cnv[i] += ycbcr[i][j] * rgbio[j];
         }
-        
+            
         switch(i){
             case 0:{
                 printf(" Y  : %9.4lf\n",ycbcr_cnv[i]);
@@ -51,6 +52,7 @@ int main(){
                 break;
             }
         }
+        rgbio[i] = 0;
     }
 
 
@@ -58,13 +60,10 @@ int main(){
     printf("<変換されたRGB信号(実数値)>\n");
     for(int i = 0; i < 3; i++){
         
-        // for(int j = 0; j < 3; j++){
-        //     rgbio[i] += rgb[i][j] * ycbcr_cnv[j];
-        // }
+        for(int j = 0; j < 3; j++){
+            rgbio[i] += rgb[i][j] * ycbcr_cnv[j];
+        }
         
-        rgbio[0] = rgb[i][0] * ycbcr_cnv[0] + rgb[i][1] * ycbcr_cnv[1] + rgb[i][2] * ycbcr_cnv[2];
-        rgbio[1] = rgb[i][0] * ycbcr_cnv[0] + rgb[i][1] * ycbcr_cnv[1] + rgb[i][2] * ycbcr_cnv[2];
-        rgbio[2] = rgb[i][0] * ycbcr_cnv[0] + rgb[i][1] * ycbcr_cnv[1] + rgb[i][2] * ycbcr_cnv[2];
         switch(i){
             case 0:{
                 printf(" R  : %9.4lf\n",rgbio[i]);

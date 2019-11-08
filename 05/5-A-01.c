@@ -29,6 +29,7 @@ int main(){
     printf(" G  : %9.4lf\n",rgbio[1]);
     printf(" B  : %9.4lf\n",rgbio[2]);
 
+    
     // 変換
     printf("<変換されたYCbCr信号(実数値)>\n");
     for(int i = 0; i < 3; i++){
@@ -36,7 +37,7 @@ int main(){
         for(int j = 0; j < 3; j++){
             ycbcr_cnv[i] += ycbcr[i][j] * rgbio[j];
         }
-        
+            
         switch(i){
             case 0:{
                 printf(" Y  : %9.4lf\n",ycbcr_cnv[i]);
@@ -51,6 +52,11 @@ int main(){
                 break;
             }
         }
+    }
+
+    // 初期化
+    for(int i = 0; i < 3; i++){
+        rgbio[i] = 0;
     }
 
 
