@@ -1,0 +1,355 @@
+Script started on Fri Nov  8 12:40:42 2019
+u306065@imac-570[31]: cat 04-B-01.c
+// 画像処理演習(ファイル読み込み/情報表示)
+// u306065 櫛田一樹
+// 2019/10/03 13:00
+
+#include<stdio.h>
+#include<stdlib.h>
+
+unsigned char header[54];
+unsigned char imgin[3][512][512];
+
+void get_data(void);
+void processing(void);
+void put_data(void);
+
+int width, height, ins;
+
+int main(){
+    get_data();
+
+    if(width < 40 || height < 40){
+        processing();
+    }else{
+        printf("画像サイズが大きすぎるためスキップします\n");
+    }
+    put_data();
+    return 0;
+}
+
+void get_data(void){
+    char fname[20];
+    FILE *fp;
+    int i;
+
+    // ファイル名の入力
+    printf("入力ファイル名を入力してください：");
+    scanf("%s",fname);
+
+    // ファイルオープン
+    fp = fopen(fname, "rb");
+
+    if(fp == NULL){
+        printf("ファイルをオープンできませんでした\n");
+        exit(1);
+    }
+
+    printf("ファイルをオープンしました.\n");
+
+    // ヘッダー情報の取得
+    for(int cnt = 0; cnt < 54; cnt++){
+        header[cnt] = fgetc(fp);
+    }
+
+
+    printf("\n<ファイルタイプ>\n");
+    for(i = 0; i < 2; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+
+    printf("\n<ファイルサイズ>\n");
+    for(i = 2; i < 6; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    int filesize = *(int *)&header[2];
+    printf("\n%dバイト\n", filesize);
+    
+    printf("\n<予約領域>\n");
+    for(i = 6; i < 10; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+
+    printf("\n<オフセット>\n");
+    for(i = 10; i < 13; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    int offset = *(int *)&header[10];
+    printf("\n%dバイト\n", offset);
+
+    printf("\n<情報ヘッダサイズ>\n");
+    for(i = 14; i < 18; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+
+    printf("\n<画像の幅>\n");
+    for(i = 18; i < 22; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    width = *(int *)&header[18];
+    printf("\n%d画素\n", width);
+
+    printf("\n<画像の高さ>\n");
+    for(i = 22; i < 26; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    height = *(int *)&header[22];
+    printf("\n%dライン\n", height);
+
+    printf("\n<色プレーン数>\n");
+    for(i = 26; i < 28; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<1画素あたりのビット数>\n");
+    for(i = 28; i < 30; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    int bit = *(int *)&header[28];
+    printf("\n%oビット\n", *(short *)&header[28]);
+    
+    printf("\n<圧縮方式>\n");
+    for(i = 30; i < 34; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<画像データサイズ>\n");
+    for(i = 34; i < 38; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<水平解像度>\n");
+    for(i = 38; i < 42; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<垂直解像度>\n");
+    for(i = 42; i < 46; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<色数>\n");
+    for(i = 46; i < 50; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<重要な色数>\n");
+    for(i = 50; i < 54; i++){
+        printf("header[%d] = %02x ", i, header[i]);
+    }
+    putchar('\n');
+    
+    printf("\n<挿入ビット数>\n");
+    ins = filesize - offset - width * height * (bit / 8);
+    printf("%dバイト\n", ins);
+
+    for(i = height - 1; i >= 0; i--){
+        for(int j = 0; j < width; j++){
+            for(int k = 2; k >= 0; k--){
+                imgin[k][i][j]=fgetc(fp);
+            }
+        }
+    }
+
+    // ファイルクローズ
+    fclose(fp);  
+}
+
+void processing(){
+    int i, j, k;
+   
+    for(i = 0; i < 3; i++){
+        switch(i){
+            case 0:{
+                printf("<R信号>\n");
+                break;
+            }case 1:{
+                printf("<G信号>\n");
+                break;
+            }case 2:{
+                printf("<B信号>\n");
+                break;
+            }
+        }
+        for(j = 0; j < height; j++){
+            for(k = 0; k < width; k++){
+                printf("%02x ", imgin[i][j][k]);
+            }
+            putchar('\n');
+        }
+        putchar('\n');
+    } 
+}
+
+void put_data(){
+    char n_fname[20];
+    FILE *fp;
+    printf("ファイル名を入力:");
+    scanf("%s",n_fname);
+    fp=fopen(n_fname,"wb");
+    if(fp==NULL){
+        printf("ファイルをオープンできません\n");
+        exit (1);
+    }
+    printf("ファイルをオープンしました\n");
+    for(int i = 0; i < 54; i++){
+        fputc(header[i],fp);
+    }
+    for(int i = height - 1; i >= 0; i--){
+        for(int j = 0; j < width; j++){
+            for(int k = 2; k >= 0; k--){
+                fputc(imgin[k][i][j],fp );
+            }
+        }
+    }
+    fclose(fp);
+}
+u306065@imac-570[32]: gcc -Wall 04-B-01.c -o 04-B.out
+u306065@imac-570[33]: 04-B.out
+入力ファイル名を入力してください：testimg.bmp
+ファイルをオープンしました.
+
+<ファイルタイプ>
+header[0] = 42 header[1] = 4d 
+
+<ファイルサイズ>
+header[2] = 68 header[3] = 00 header[4] = 00 header[5] = 00 
+104バイト
+
+<予約領域>
+header[6] = 00 header[7] = 00 header[8] = 00 header[9] = 00 
+
+<オフセット>
+header[10] = 36 header[11] = 00 header[12] = 00 
+54バイト
+
+<情報ヘッダサイズ>
+header[14] = 28 header[15] = 00 header[16] = 00 header[17] = 00 
+
+<画像の幅>
+header[18] = 04 header[19] = 00 header[20] = 00 header[21] = 00 
+4画素
+
+<画像の高さ>
+header[22] = 04 header[23] = 00 header[24] = 00 header[25] = 00 
+4ライン
+
+<色プレーン数>
+header[26] = 01 header[27] = 00 
+
+<1画素あたりのビット数>
+header[28] = 18 header[29] = 00 
+30ビット
+
+<圧縮方式>
+header[30] = 00 header[31] = 00 header[32] = 00 header[33] = 00 
+
+<画像データサイズ>
+header[34] = 32 header[35] = 00 header[36] = 00 header[37] = 00 
+
+<水平解像度>
+header[38] = 12 header[39] = 0b header[40] = 00 header[41] = 00 
+
+<垂直解像度>
+header[42] = 12 header[43] = 0b header[44] = 00 header[45] = 00 
+
+<色数>
+header[46] = 00 header[47] = 00 header[48] = 00 header[49] = 00 
+
+<重要な色数>
+header[50] = 00 header[51] = 00 header[52] = 00 header[53] = 00 
+
+<挿入ビット数>
+2バイト
+<R信号>
+00 01 02 03 
+04 05 06 07 
+08 09 0a 0b 
+0c 0d 0e 0f 
+
+<G信号>
+10 11 12 13 
+14 15 16 17 
+18 19 1a 1b 
+1c 1d 1e 1f 
+
+<B信号>
+20 21 22 23 
+24 25 26 27 
+28 29 2a 2b 
+2c 2d 2e 2f 
+
+ファイル名を入力:testimg_cp.bmp
+ファイルをオープンしました
+u306065@imac-570[34]: 04-B.out
+入力ファイル名を入力してください：lenna.bmp
+ファイルをオープンしました.
+
+<ファイルタイプ>
+header[0] = 42 header[1] = 4d 
+
+<ファイルサイズ>
+header[2] = 38 header[3] = 00 header[4] = 0c header[5] = 00 
+786488バイト
+
+<予約領域>
+header[6] = 00 header[7] = 00 header[8] = 00 header[9] = 00 
+
+<オフセット>
+header[10] = 36 header[11] = 00 header[12] = 00 
+54バイト
+
+<情報ヘッダサイズ>
+header[14] = 28 header[15] = 00 header[16] = 00 header[17] = 00 
+
+<画像の幅>
+header[18] = 00 header[19] = 02 header[20] = 00 header[21] = 00 
+512画素
+
+<画像の高さ>
+header[22] = 00 header[23] = 02 header[24] = 00 header[25] = 00 
+512ライン
+
+<色プレーン数>
+header[26] = 01 header[27] = 00 
+
+<1画素あたりのビット数>
+header[28] = 18 header[29] = 00 
+30ビット
+
+<圧縮方式>
+header[30] = 00 header[31] = 00 header[32] = 00 header[33] = 00 
+
+<画像データサイズ>
+header[34] = 00 header[35] = 00 header[36] = 00 header[37] = 00 
+
+<水平解像度>
+header[38] = 12 header[39] = 0b header[40] = 00 header[41] = 00 
+
+<垂直解像度>
+header[42] = 12 header[43] = 0b header[44] = 00 header[45] = 00 
+
+<色数>
+header[46] = 00 header[47] = 00 header[48] = 00 header[49] = 00 
+
+<重要な色数>
+header[50] = 00 header[51] = 00 header[52] = 00 header[53] = 00 
+
+<挿入ビット数>
+2バイト
+画像サイズが大きすぎるためスキップします
+ファイル名を入力:lenna_cp.bmp
+ファイルをオープンしました
+u306065@imac-570[35]: exit
+exit
+
+Script done on Fri Nov  8 12:42:38 2019
