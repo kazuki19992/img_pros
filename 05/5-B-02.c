@@ -59,11 +59,11 @@ void get_data(){
     }
 
 
-    printf("\n<ファイルタイプ>\n");
-    for(i = 0; i < 2; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<ファイルタイプ>\n");
+    // for(i = 0; i < 2; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
 
     printf("\n<ファイルサイズ>\n");
     for(i = 2; i < 6; i++){
@@ -72,11 +72,11 @@ void get_data(){
     int filesize = *(int *)&header[2];
     printf("\n%dバイト\n", filesize);
     
-    printf("\n<予約領域>\n");
-    for(i = 6; i < 10; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<予約領域>\n");
+    // for(i = 6; i < 10; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
 
     printf("\n<オフセット>\n");
     for(i = 10; i < 13; i++){
@@ -85,11 +85,11 @@ void get_data(){
     int offset = *(int *)&header[10];
     printf("\n%dバイト\n", offset);
 
-    printf("\n<情報ヘッダサイズ>\n");
-    for(i = 14; i < 18; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<情報ヘッダサイズ>\n");
+    // for(i = 14; i < 18; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
 
     printf("\n<画像の幅>\n");
     for(i = 18; i < 22; i++){
@@ -105,11 +105,11 @@ void get_data(){
     height = *(int *)&header[22];
     printf("\n%dライン\n", height);
 
-    printf("\n<色プレーン数>\n");
-    for(i = 26; i < 28; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<色プレーン数>\n");
+    // for(i = 26; i < 28; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
     printf("\n<1画素あたりのビット数>\n");
     for(i = 28; i < 30; i++){
@@ -118,41 +118,41 @@ void get_data(){
     int bit = *(int *)&header[28];
     printf("\n%oビット\n", *(short *)&header[28]);
     
-    printf("\n<圧縮方式>\n");
-    for(i = 30; i < 34; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<圧縮方式>\n");
+    // for(i = 30; i < 34; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
-    printf("\n<画像データサイズ>\n");
-    for(i = 34; i < 38; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<画像データサイズ>\n");
+    // for(i = 34; i < 38; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
-    printf("\n<水平解像度>\n");
-    for(i = 38; i < 42; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<水平解像度>\n");
+    // for(i = 38; i < 42; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
-    printf("\n<垂直解像度>\n");
-    for(i = 42; i < 46; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<垂直解像度>\n");
+    // for(i = 42; i < 46; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
-    printf("\n<色数>\n");
-    for(i = 46; i < 50; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<色数>\n");
+    // for(i = 46; i < 50; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
-    printf("\n<重要な色数>\n");
-    for(i = 50; i < 54; i++){
-        printf("header[%d] = %02x ", i, header[i]);
-    }
-    putchar('\n');
+    // printf("\n<重要な色数>\n");
+    // for(i = 50; i < 54; i++){
+    //     printf("header[%d] = %02x ", i, header[i]);
+    // }
+    // putchar('\n');
     
     printf("\n<挿入ビット数>\n");
     ins = filesize - offset - width * height * (bit / 8);
@@ -176,21 +176,21 @@ void rgb_to_ybr(){
     printf("---R---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[0][j][i]);
+            printf("%.2X ",imgin[0][j][i]);
         }
         putchar('\n');
     }
     printf("---G---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[1][j][i]);
+            printf("%.2X ",imgin[1][j][i]);
         }
         putchar('\n');
     }
     printf("---B---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[2][j][i]);
+            printf("%.2X ",imgin[2][j][i]);
         }
         putchar('\n');
     }
@@ -271,7 +271,7 @@ void rgb_to_ybr(){
         }
         for(int j = 0; j < height; j++){
             for(int k = 0; k < width; k++){
-                printf("%.2x ",imgin[i][k][j]);
+                printf("%.2X ",imgin[i][k][j]);
             }
             putchar('\n');
         }
@@ -313,21 +313,21 @@ void ybr_to_rgb(){
     printf("--- Y ---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[0][j][i]);
+            printf("%.2X ",imgin[0][j][i]);
         }
         putchar('\n');
     }
     printf("--- Cb ---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[1][j][i]);
+            printf("%.2X ",imgin[1][j][i]);
         }
         putchar('\n');
     }
     printf("--- Cr ---\n");
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-            printf("%.2x ",imgin[2][j][i]);
+            printf("%.2X ",imgin[2][j][i]);
         }
         putchar('\n');
     }
@@ -418,7 +418,7 @@ void ybr_to_rgb(){
         }
         for(int j = 0; j < height; j++){
             for(int k = 0; k < width; k++){
-                printf("%.2x ",imgout[i][k][j]);
+                printf("%.2X ",imgout[i][k][j]);
             }
             putchar('\n');
         }
