@@ -12,8 +12,8 @@ const double rgb[3][3] = {{ 1.0000, 0.0000, 1.4020},
                     { 1.0000, -0.3441, -0.7141},
                     { 1.0000, 1.7720, 0.0000}};
 
-double ycbcr_cnv[3][512][512] = {0}, do_ycbcr_cnv[3] = {0}, rgbio[3] = {0}, rgb_cnv[3][512][512] = {0};
-int int_ycbcr_cnv[3] = {0}, int_rgbio[3] = {0}, width, height, ins;
+double ycbcr_cnv[3][512][512] = {}, do_ycbcr_cnv[3] = {}, rgbio[3] = {}, rgb_cnv[3][512][512] = {};
+int int_ycbcr_cnv[3] = {}, int_rgbio[3] = {}, width, height, ins;
 
 unsigned char header[54];
 unsigned char imgin[3][512][512], imgout[3][512][512];
@@ -335,7 +335,7 @@ void ybr_to_rgb(){
 
 
     // オフセット加算値減算
-    short tmp[3][512][512] = {0};
+    short tmp[3][512][512] = {};
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < height; j++){
             for(int k = 0; k < width; k++){
