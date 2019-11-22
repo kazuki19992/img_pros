@@ -158,8 +158,6 @@ void get_data(){
     ins = filesize - offset - width * height * (bit / 8);
     printf("%dバイト\n\n", ins);
 
-    // デバッグ用
-    printf("横幅: %d, 縦幅: %d\n", width, height);
 
     for(i = height - 1; i >= 0; i--){
         for(int j = 0; j < width; j++){
@@ -285,12 +283,21 @@ void rgb_to_ybr(){
 void processing(){
     // int i, j, k, cpmode[3];
     // imgin 2 imgout
-
+    int half_width = width / 2, half_height = height / 2;
+    
     for(int i = 0; i < 3; i++){
         // コピーを行う
         for(int j = 0; j < height; j++){
             for(int k = 0; k < width; k++){
-                imgout[i][j][k] = imgin[i][j][k];
+                if( (j <= half_height && k > half_width) || (j > half_height && k <= half_width) ){
+                    if(i == 0){
+                        imgout[i][j][k] = 0;
+                    }else{
+                        imgout[i][j][k] = 128;
+                    }
+                }else{
+                    imgout[i][j][k] = imgin[i][j][k];
+                }
             }
         }
     } 
