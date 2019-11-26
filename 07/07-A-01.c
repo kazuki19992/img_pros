@@ -299,7 +299,7 @@ void processing(){
                         for (int l = 0; l < 2; l++){
                             for(int m = 0; m < 2; m++){
                                 // 標本化処理
-                                ave = imgin[i][j][k] + imgin[i][j + 1][k] + imgin[i][j][k+  1] + imgin[i][j + 1][k + 1] / 4;
+                                ave = (imgin[i][j][k] + imgin[i][j + 1][k] + imgin[i][j][k+  1] + imgin[i][j + 1][k + 1]) / 4;
                                 // imgoutへの出力
                                 imgout[i][j + l][k + m] = ave;
                             }
