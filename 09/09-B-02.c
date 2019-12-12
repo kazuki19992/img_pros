@@ -281,85 +281,34 @@ void rgb_to_ybr(){
 }
 
 void processing(){
-    // 明度レベルカウンタ
-    double brightness[256] = {0};
-    double bright_conv[256] = {0};
-    int max[2] = {0};
+    int max = imgin[0][0][0], min = imgin[0][0][0];
 
-    for(int i = 0; i < 3; i++){
-        // コピーを行う
-        for(int j = 0; j < height; j++){
-            for(int k = 0; k < width; k++){
-               
-                if(i == 0){
-
-                    // 明度レベル毎のカウントを行う
-                    for(int l = 0; l < 256; l++){
-                        // 明度カウント処理
-                        if(imgin[i][j][k] == l){
-                            brightness[l]++;
-                        }
-                    }
-
-                    // コントラスト改善画像をコピー
-                    imgout[i][j][k] = (255 / ())
-                }
-
-                // 画像コピーを行う
-                imgout[i][j][k] = imgin[i][j][k];
-            }
-        }
-    }
-
-    // 最大度数算出
-    for(int i = 0; i < 256; i++){
-        if(brightness[i] > max[0]){
-            // 最大度数と添字を格納
-            max[0] = brightness[i];     // 最大度数
-            max[1] = i;                 // 最大度数の添字
-        }
-    }
-
-    // 正規化処理
-    for(int i = 0; i < 256; i++){
-        bright_conv[i] = (brightness[i] / max[0]) * 100;
-        
-        // 四捨五入
-        bright_conv[i] += 0.5;
-        bright_conv[i] = (int)bright_conv[i];
-    }
-
-    // ヒストグラム描画処理
+    // 最大画素値と最小画素値
     for(int j = 0; j < height; j++){
         for(int k = 0; k < width; k++){
-            // ヒストグラム範囲設定
-            if( j > height - 100 && k < 256){
-                
-                // グラフ描画
-                if( height - j < (int)bright_conv[k]){
-                    // グラフ色：赤
-                    imgout[0][j][k] = 0x00;
-                    imgout[1][j][k] = 0x80;
-                    imgout[2][j][k] = 0xff;
-                }else{
-                    // グラフ背景：黒
-                    imgout[0][j][k] = 0x00;
-                    imgout[1][j][k] = 0x80;
-                    imgout[2][j][k] = 0x80;
-                }
+            if(max < imgin[0][j][k]){
+                max = imgin[0][j][k];
+            }else if(min > imgin[0][j][k]){
+                min = imgin[0][j][k];
             }
         }
     }
 
+    for(int j = 0; j < height; j++){
+        for(int k = 0; k < width; k++){
+
+            // コントラスト改善画像をコピー
+            imgout[0][j][k]=(255/(max-min))*(imgin[0][j][k]-min);
+
+            // 画像コピーを行う
+            imgout[1][j][k] = imgin[1][j][k];
+            imgout[2][j][k] = imgin[2][j][k];
+        }
+    }
 
     // 出力処理
-    printf("＜最大度数＞\n");
-    printf("画素値%4d : %5d\n\n",max[1], max[0]);
-
-    printf("＜度数表＞\n");
-    for(int i = 0; i < 256; i++){
-        printf("画素値%4d : %5.0f --> %4.0f\n", i, brightness[i], bright_conv[i]);
-    }
+    printf("最大画素値: %4d\n", max);
+    printf("最小画素値: %4d\n\n", min);
     
 }
 
