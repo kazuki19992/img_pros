@@ -1,0 +1,6 @@
+Script started on Fri Nov 29 14:21:11 2019
+u306065@imac-570[31]: cat 
+[Ku306065@imac-570[31]: exit
+exit
+
+Script done on Fri Nov 29 14:21:26 2019
