@@ -283,9 +283,9 @@ void rgb_to_ybr(){
 void processing(){
     int i, j, x, y;
     double filted;
-    double filter[3][3]={{1.0/9.0,1.0/9.0,1.0/9.0},
-                        {1.0/9.0,1.0/9.0,1.0/9.0},
-                        {1.0/9.0,1.0/9.0,1.0/9.0}};
+    double filter[3][3]={{ 0, 1, 0},
+                         { 1,-4, 1},
+                         { 0, 1, 0}};
 
     printf("\n＜フィルタ係数＞\n");
     for(x = 0; x < 3; x++){
@@ -295,50 +295,47 @@ void processing(){
         printf("\n");
     }
 
-    printf("\nフィルタ処理する画素の座標を入力してください\n");
-    printf("水平座標：");
-    scanf("%d",&x);
-    printf("垂直座標：");
-    scanf("%d",&y);
+    // printf("\nフィルタ処理する画素の座標を入力してください\n");
+    // printf("水平座標：");
+    // scanf("%d",&x);
+    // printf("垂直座標：");
+    // scanf("%d",&y);
 
     // コピー
     for(i = 0; i < height; i++){
         for(j = 0; j < width; j++){
             imgout[0][i][j] = imgin[0][i][j];
-            imgout[1][i][j] = imgin[1][i][j];
-            imgout[2][i][j] = imgin[2][i][j];
+            imgout[1][i][j] = 128;
+            imgout[2][i][j] = 128;
         }
     }
+    for(int j = 0; j < height; j++){
+        for(int k = 0; k < width; k++){
+            if(k == 0 || k == width - 1 || j == 0 || j == height - 1){
+                // 画像端の場合
+                imgout[0][j][k] = 0;
 
-    if(x == 0 || x == width - 1 || y == 0 || y == height - 1){
-        // 画像端かどうか判別する
-        printf("\n----- この座標は画像の端に位置するためフィルタ処理ができません\n");
-
-    }else{
-
-        printf("\n＜フィルタ処理に使用する画素の値＞\n");
-        filted = 0;
-
-        // フィルター処理
-        // 9マスの中心を0として、左上がx = -1, y = -1となり、
-        // 右下がx = 1, y = 1となる
-        for(j = -1; j < 2; j++){
-            for(i = -1; i < 2; i++){
-                printf("%d ", imgin[0][y+j][x+i]);
-
-                // 1/9したものを掛けたものを9つ足しているので平均化される
-                filted += (double)(imgin[0][y+j][x+i] * filter[j+1][i+1]);
-            }
-            printf("\n");
-        }
-  
-        //フィルターをかけたものを足したやつを四捨五入してimgoutに代入
-        filted = (int)(filted+0.5);
-        imgout[0][y][x]=(int)filted;
+            }else{
+                filted = 0;
+                // フィルター処理
+                // 9マスの中心を0として、左上がx = -1, y = -1となり、
+                // 右下がx = 1, y = 1となる
+                for(int l = -1; l < 2; l++){
+                    for(int m = -1; m < 2; m++){
+                        // フィルタ処理を行う
+                        filted += (double)(imgin[0][j + l][k + m] * filter[l + 1][m + 1]);
+                    }
+                }
         
-        printf("\n＜フィルタ処理後の画素値＞\n%d\n",(int)filted);
-        // printf("\n入力画像データをコピーして出力画像データを作成しました.\n");
+                //フィルターをかけたものを足したやつを四捨五入して +128してimgoutに代入
+                filted = (int)(filted+0.5);
+                imgout[0][j][k]=(int)filted + 128;
+                
+            }
+        }
     }
+    printf("\n入力画像データをコピーして出力画像データを作成しました.\n");
+    
 }
 
 
