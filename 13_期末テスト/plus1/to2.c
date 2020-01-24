@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 const double ycbcr[3][3] = {{ 0.2990, 0.5870, 0.1140},
                         { -0.1687, -0.3313, 0.5000},
@@ -20,28 +21,33 @@ unsigned char imgin[3][512][512], imgout[3][512][512];
 
 void rgb_to_ybr();
 void ybr_to_rgb();
-void get_data();
-void put_data();
-void processing();
+void get_data(int argc, char fname_arg[]);
+void put_data(int argc, char n_fname_arg[]);
+void processing(int argc, char values_arg[]);
 
 
-int main(){
-    get_data();
+int main(int argc, char *argv[]){
+    get_data(argc, argv[1]);
     rgb_to_ybr();
-    processing();
+    processing(argc, argv[3]);
     ybr_to_rgb();
-    put_data();
+    put_data(argc, argv[2]);
     return 0;
 }
 
-void get_data(){
+void get_data(int argc, char fname_arg[]){
     char fname[20];
     FILE *fp;
     int i;
+    
+    // 文字列を配列にコピー
+    strcpy(fname, fname_arg);
+    // 文字列に拡張子を追加
+    strcat(fname, ".bmp");
 
     // ファイル名の入力
-    printf("入力ファイル名を入力してください：");
-    scanf("%s",fname);
+    printf("入力ファイル名：%s\n", fname);
+    // scanf("%s",fname);
 
     // ファイルオープン
     fp = fopen(fname, "rb");
@@ -51,7 +57,7 @@ void get_data(){
         exit(1);
     }
 
-    printf("ファイルをオープンしました.\n");
+    // printf("ファイルをオープンしました.\n");
 
     // ヘッダー情報の取得
     for(int cnt = 0; cnt < 54; cnt++){
@@ -65,12 +71,12 @@ void get_data(){
     // }
     // putchar('\n');
 
-    printf("\n<ファイルサイズ>\n");
+    // printf("\n<ファイルサイズ>\n");
     for(i = 2; i < 6; i++){
-        printf("header[%d] = %02x ", i, header[i]);
+        // printf("header[%d] = %02x ", i, header[i]);
     }
     int filesize = *(int *)&header[2];
-    printf("\n%dバイト\n", filesize);
+    // printf("\n%dバイト\n", filesize);
     
     // printf("\n<予約領域>\n");
     // for(i = 6; i < 10; i++){
@@ -78,12 +84,12 @@ void get_data(){
     // }
     // putchar('\n');
 
-    printf("\n<オフセット>\n");
+    // printf("\n<オフセット>\n");
     for(i = 10; i < 13; i++){
-        printf("header[%d] = %02x ", i, header[i]);
+        // printf("header[%d] = %02x ", i, header[i]);
     }
     int offset = *(int *)&header[10];
-    printf("\n%dバイト\n", offset);
+    // printf("\n%dバイト\n", offset);
 
     // printf("\n<情報ヘッダサイズ>\n");
     // for(i = 14; i < 18; i++){
@@ -91,19 +97,19 @@ void get_data(){
     // }
     // putchar('\n');
 
-    printf("\n<画像の幅>\n");
+    // printf("\n<画像の幅>\n");
     for(i = 18; i < 22; i++){
-        printf("header[%d] = %02x ", i, header[i]);
+    //     printf("header[%d] = %02x ", i, header[i]);
     }
     width = *(int *)&header[18];
-    printf("\n%d画素\n", width);
+    // printf("\n%d画素\n", width);
 
-    printf("\n<画像の高さ>\n");
+    // printf("\n<画像の高さ>\n");
     for(i = 22; i < 26; i++){
-        printf("header[%d] = %02x ", i, header[i]);
+        // printf("header[%d] = %02x ", i, header[i]);
     }
     height = *(int *)&header[22];
-    printf("\n%dライン\n", height);
+    // printf("\n%dライン\n", height);
 
     // printf("\n<色プレーン数>\n");
     // for(i = 26; i < 28; i++){
@@ -111,12 +117,12 @@ void get_data(){
     // }
     // putchar('\n');
     
-    printf("\n<1画素あたりのビット数>\n");
+    // printf("\n<1画素あたりのビット数>\n");
     for(i = 28; i < 30; i++){
-        printf("header[%d] = %02x ", i, header[i]);
+        // printf("header[%d] = %02x ", i, header[i]);
     }
     int bit = *(int *)&header[28];
-    printf("\n%oビット\n", *(short *)&header[28]);
+    // printf("\n%oビット\n", *(short *)&header[28]);
     
     // printf("\n<圧縮方式>\n");
     // for(i = 30; i < 34; i++){
@@ -154,9 +160,9 @@ void get_data(){
     // }
     // putchar('\n');
     
-    printf("\n<挿入ビット数>\n");
+    // printf("\n<挿入ビット数>\n");
     ins = filesize - offset - width * height * (bit / 8);
-    printf("%dバイト\n\n", ins);
+    // printf("%dバイト\n\n", ins);
 
 
     for(i = height - 1; i >= 0; i--){
@@ -277,23 +283,23 @@ void rgb_to_ybr(){
     //         putchar('\n');
     //     }
     // }
-    putchar('\n');
+    // putchar('\n');
 }
 
-void processing(){
+void processing(int args, char values_arg[]){
     // int i, j, k, cpmode[3];
     // imgin 2 imgout
     int level;
-    int pivot, halfpivot;
+    // int pivot, halfpivot;
 
     // 量子化レベル
-    // level = 2;
-    printf("出力画像の量子化レベル数を入力して下さい(2,4,8,16)：");
-    scanf("%d",&level);
+    level = atoi(values_arg);
+    printf("しきい値：%d\n", level);
+    // scanf("%d",&level);
 
     // level数で分割した際の各レベルの大きさ
-    pivot = 256 / level;
-    halfpivot = pivot / 2;
+    // pivot = 256 / level;
+    // halfpivot = pivot / 2;
 
     for(int i = 0; i < 3; i++){
         // コピーを行う
@@ -303,12 +309,19 @@ void processing(){
                 if(i == 0){
 
                     // 量子化処理
-                    for(int l = 1; l <= level; l++){
-                        if(pivot * (l - 1) <= imgin[i][j][k] && imgin[i][j][k] < pivot * l){
-                            imgout[i][j][k] = halfpivot + (pivot * (l - 1));
-                        }
-                    }
+                    // for(int l = 1; l <= level; l++){
+                    //     if(pivot * (l - 1) <= imgin[i][j][k] && imgin[i][j][k] < pivot * l){
+                    //         imgout[i][j][k] = halfpivot + (pivot * (l - 1));
+                    //     }
+                    // }
                     
+                    // 2値化処理
+                    if(imgin[i][j][k] > level){
+                        imgout[i][j][k] = 255;
+                    }else{
+                        imgout[i][j][k] = 0;
+                    }
+
                 }else{
                     // Cb, Crの固定値への置き換えを行うと
                     // モノクロ画像への変換が行える
@@ -320,7 +333,7 @@ void processing(){
         }
 
     }
-    printf("\n入力画像データをコピーして出力画像データを作成しました.\n");
+    // printf("\n入力画像データをコピーして出力画像データを作成しました.\n");
 }
 
 void ybr_to_rgb(){
@@ -441,18 +454,21 @@ void ybr_to_rgb(){
     // }
 }
 
-void put_data(){
+void put_data(int argc, char n_fname_arg[]){
     char n_fname[20];
     FILE *fp;
-    printf("出力画像データを作成しました.\n\n");
-    printf("ファイル名を入力:");
-    scanf("%s",n_fname);
+
+    strcpy(n_fname, n_fname_arg);
+    strcat(n_fname, ".bmp");
+
+    printf("出力画像: %s\n", n_fname);
+    // scanf("%s",n_fname);
     fp=fopen(n_fname,"wb");
     if(fp==NULL){
         printf("ファイルをオープンできません\n");
         exit (1);
     }
-    printf("ファイルをオープンしました\n");
+    // printf("ファイルをオープンしました\n");
     for(int i = 0; i < 54; i++){
         fputc(header[i],fp);
     }
@@ -464,5 +480,5 @@ void put_data(){
         }
     }
     fclose(fp);
-    printf("ファイルをクローズしました\n");
+    // printf("ファイルをクローズしました\n");
 }
